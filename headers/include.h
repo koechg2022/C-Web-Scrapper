@@ -1,17 +1,14 @@
-#include <sys/socket.h> // basic socket definitions
-#include <sys/types.h>
+
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <arpa/inet.h>
 #include <stdarg.h> // for variadic function
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/time.h>
 #include <sys/ioctl.h>
-#include <netdb.h>
 #include <regex>
 #include <termios.h>
 #include <stdarg.h> // for varaidic functions
@@ -39,11 +36,18 @@
 
 #if defined(__unix__) || (defined(__MACH__)) || (defined(__APPLE__)) || (defined(__linux__))
 // Good
-#define SYS_SLASH "/"
+#include <sys/socket.h> // basic socket definitions
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+// #include <netinet/in.h> // not sure what this is for
+#define SYS_SLASH '/'
 
 #else
 // I'm sorry for you windows user
-#define SYS_SLASH "\\"
+#include <winsock2.h> // basic socket definitions
+#include <ws2tcpip.h>
+#define SYS_SLASH '\\'
 
 #endif
 
@@ -135,7 +139,9 @@ bool file_exists(std::string file) {
     return true;
 }
 
-
+bool is_crap_os(){
+    return useful_functions::same_char(SYS_SLASH, '\\');
+}
 
 namespace web_scraping {
 
@@ -266,7 +272,7 @@ namespace web_scraping {
                 initial_vals.ai_flags = AI_PASSIVE; // fill in my IP address for me.
 
 
-                // retrieve the host information
+                // retrieve the host information (should work on unix and windows)
                 if ((status = getaddrinfo(this->url.c_str(), this->connect_port.c_str(), &initial_vals, &response)) != 0) {
                     fprintf(stderr, "Error retrieving information for \"%s\". Error : %s\n", this->url.c_str(), gai_strerror(status));
                     exit(RETRIEVE_INFO_ERROR);
@@ -396,7 +402,7 @@ namespace web_scraping {
                     std::filesystem::remove(file_name);
                 }
                 unsigned long index;
-                this->write_data(this->url + "\n", file_name);
+                this->write_data(this->url + ":\n", file_name);
                 for (index = 0; index < this->addresses.length(); index = index + 1) {
                     this->write_data(std::string(host_indent) + std::to_string(this->addresses[index].get_ip_version()) + std::string(this->gap) + this->addresses[index].get_ip_address() + ((index + 1 == this->addresses.length()) ? "" : "\n"), file_name);
                 }

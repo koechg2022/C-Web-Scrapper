@@ -17,7 +17,7 @@ int main(int len, char** args) {
     else {
         ip_address = std::string(args[1]);
     }
-    fprintf(stdout, "SYS_SLASH is %s\n", SYS_SLASH);
+    fprintf(stdout, "Operating System : %s\n", is_crap_os() ? "Windows" : "Unix");
     web_scraping::host_info inputted_host(ip_address), other_host;
     printf("inputted_host_info : \n");
     inputted_host.print_host_info();
