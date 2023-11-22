@@ -37,12 +37,12 @@
 #define CANNOT_OPEN_FILE 3
 
 
-#ifdef __unix__
-
+#if defined(__unix__) || (defined(__MACH__)) || (defined(__APPLE__)) || (defined(__linux__))
+// Good
 #define SYS_SLASH "/"
 
 #else
-
+// I'm sorry for you windows user
 #define SYS_SLASH "\\"
 
 #endif
@@ -458,7 +458,7 @@ namespace web_scraping {
             }
 
 
-        
+
 
 
     };
