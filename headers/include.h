@@ -150,6 +150,8 @@ namespace web_scraping {
             ip6 = 6
         } ip_ver;
 
+        typedef unsigned char byte;
+
         class host_address {
 
             private:
@@ -442,6 +444,14 @@ namespace web_scraping {
 
             host_info host;
             std::string save_directory, save_file;
+
+
+            bool successfull_http_call(data_structures::linear_linked_list<byte> bytes) {
+                // pass in a linear_linked_list of bytes and assess if the returned response is valid or not.
+                bool the_answer = true;
+
+                return the_answer;
+            }
 
 
         public:
