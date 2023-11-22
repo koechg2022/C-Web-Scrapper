@@ -164,6 +164,7 @@ namespace web_scraping {
                     this->v = ip4;
                 }
 
+
                 host_address(std::string address, unsigned short int ip_) {
                     this->ip_address = address;
                     this->v = (ip_ == 4) ? ip4 : ip6;
@@ -174,17 +175,21 @@ namespace web_scraping {
                     this->ip_address = address;
                 }
 
+
                 std::string get_ip_address() const {
                     return this->ip_address;
                 }
+
 
                 void set_ip_4() {
                     this->v = ip4;
                 }
 
+
                 void set_ip_6() {
                     this->v = ip6;
                 }
+
 
                 unsigned short get_ip_version() const {
                     return (this->v == ip4) ? 4 : 6;
@@ -403,21 +408,26 @@ namespace web_scraping {
                 this->read_from(file_name);
             }
 
+
             std::string get_url() const {
                 return this->url;
             }
+
 
             void set_url(std::string url) {
                 this->url = url;
             }
 
+
             data_structures::linear_linked_list<host_address> get_host_addresses() {
                 return this->addresses;
             }
 
+
             void set_connect_port(std::string port_) {
                 this->connect_port = port_;
             }
+
 
             std::string get_connect_port() const {
                 return this->connect_port;
@@ -446,6 +456,10 @@ namespace web_scraping {
                 this->save_directory = save_dir;
                 this->save_file = save_f;
             }
+
+
+        
+
 
     };
 
