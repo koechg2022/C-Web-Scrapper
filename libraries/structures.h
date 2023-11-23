@@ -337,12 +337,6 @@ namespace data_structures {
 						frame_to_target = ((signed long) add_to) - ((signed long) this->frame_index);
 						signed long* distances[] = {&front_to_target, &rear_to_target, &frame_to_target};
 						signed long* minimum = useful_functions::min(3, distances, true);
-						// std::cout << "\n\nAdding to index : " << add_to << " (" << index << ")" << std::endl;
-						// std::cout << "front_to_target : " << front_to_target << std::endl;
-						// std::cout << "rear_to_target : " << rear_to_target << std::endl;
-						// std::cout << "frame_to_target : " << frame_to_target << std::endl;
-						// std::cout << "minimum : " << *minimum << std::endl;
-						// std::cout << "frame_info : " << this->frame_index << ".)\t" << this->frame->get_data() << std::endl;
 						if (minimum == &front_to_target) {
 							this->frame = this->front;
 							this->frame_index = 0;
