@@ -3,18 +3,41 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <stdarg.h> // for variadic function
 #include <errno.h>
 #include <fcntl.h>
-#include <sys/time.h>
-#include <sys/ioctl.h>
 #include <regex>
-#include <termios.h>
 #include <stdarg.h> // for varaidic functions
 #include <fstream>
 #include <filesystem>
 #include "../libraries/structures.h"
+
+
+
+
+#if defined(__unix__) || (defined(__MACH__)) || (defined(__APPLE__)) || (defined(__linux__))
+// Good
+#include <sys/socket.h> // basic socket definitions
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <sys/ioctl.h>
+#include <termios.h>
+// #include <netinet/in.h> // not sure what this is for
+#define SYS_SLASH '/'
+
+#else
+// I'm sorry for you windows user
+#include <winsock2.h> // basic socket definitions
+#include <ws2tcpip.h>
+#define SYS_SLASH '\\'
+
+#endif
+
+
+
 
 // standard for webpages
 #define WEB_SERVER_PORT 80
@@ -34,22 +57,6 @@
 #define CANNOT_OPEN_FILE 3
 
 
-#if defined(__unix__) || (defined(__MACH__)) || (defined(__APPLE__)) || (defined(__linux__))
-// Good
-#include <sys/socket.h> // basic socket definitions
-#include <sys/types.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-// #include <netinet/in.h> // not sure what this is for
-#define SYS_SLASH '/'
-
-#else
-// I'm sorry for you windows user
-#include <winsock2.h> // basic socket definitions
-#include <ws2tcpip.h>
-#define SYS_SLASH '\\'
-
-#endif
 
 
 char* copy_str(char* the_string) {
