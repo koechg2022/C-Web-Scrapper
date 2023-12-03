@@ -1,25 +1,14 @@
 #include <iostream>
-
 #include "useful_functions.h"
 
 
 
-// int counter = 1;
+
 
 namespace data_structures {
 
 	namespace {
 
-		template <typename data_> data_ absolute(data_ value) {
-			return ((value < 0) ? (data_) (value * -1) : (data_) value);
-		}
-
-		template<typename data_> data_* absolute(data_* value) {
-			if (*value < 0) {
-				*value = (data_) (*value * -1);
-			}
-			return value;
-		}
 
 		template <typename data_> class node_root {
 
@@ -28,10 +17,9 @@ namespace data_structures {
 			
 			public:
 
-				node_root() : this_data() {}
+				node_root(){}
 
-				node_root(data_ new_data) {
-					this->this_data = new_data;
+				node_root(data_ new_data) : this_data(new_data){
 				}
 
 				void set_data(data_ d) {
@@ -48,19 +36,16 @@ namespace data_structures {
 
 		};
 
+
 		template <typename data_, typename indx_ = signed long> class numbered_node : public node_root<data_> {
 
-			protected:
+
+			private:
 				indx_ index;
 
-			public:
 
-				numbered_node() {
-				}
 
-				numbered_node(data_ new_data, indx_ index = -1) : node_root<data_>(new_data) {
-					this->index = index;
-				}
+			protected:
 
 				void set_index(indx_ index) {
 					this->index = index;
@@ -71,7 +56,17 @@ namespace data_structures {
 					return this->index;
 				}
 
+			public:
+
+				numbered_node() {
+				}
+
+				numbered_node(data_ new_data, indx_ index = -1) : node_root<data_>(new_data) {
+					this->index = index;
+				}
+
 		};
+
 
 		template <typename data_> class linear_node : public node_root<data_> {
 			
@@ -109,7 +104,69 @@ namespace data_structures {
 
 		};
 
+
+		template <typename data_> class bst_node : public numbered_node <data_, signed long> {
+
+			private:
+				bst_node<data_>* left_child, *right_child, *parent;
+
+			public:
+
+				bst_node() {
+					this->left_child = this->right_child = parent = nullptr;
+					this->set_index(-1);
+				}
+
+				bst_node(data_ new_data, signed long height = -1) {
+					this->this_data = new_data;
+					this->set_index(height);
+					this->left_child = this->right_child = parent = nullptr;
+				}
+
+				void set_left_child(bst_node<data_>* left) {
+					this->left_child = left;
+				}
+
+				void set_right_child(bst_node<data_>* right) {
+					this->right_child = right;
+				}
+
+				void set_parent(bst_node<data_>* mother) {
+					this->parent = mother;
+				}
+
+				bst_node<data_>* get_left_child() {
+					return this->left_child;
+				}
+
+				bst_node<data_>* get_right_child() {
+					return this->right_child;
+				}
+
+				bst_node<data_>* get_parent() {
+					return this->parent;
+				}
+
+				void set_height(signed long height) {
+					this->set_index(height);
+				}
+
+				void set_h(signed long height) {
+					this->index = height;
+				}
+
+				signed long get_height() const {
+					return this->get_index();
+				}
+
+				signed long get_h() const {
+					return this->index;
+				}
+
+		};
+
 	}
+
 
 	template <typename data_> class linear_linked_list {
 
@@ -119,7 +176,7 @@ namespace data_structures {
 			unsigned long size, frame_index;
 
 			void node_shifter(linear_node<data_>* this_node, unsigned long node_index, signed long by) {
-				// std::cout << "\t\tCall to node_shifter(" << "\"" << this_node->get_data() << "\", " << node_index << ", " << by << ")" << std::endl;
+
 				signed long start_index = (signed long) node_index;
 				while ((by != 0) && (this_node != nullptr) && (node_index != by)) {
 					if (by > 0) {
@@ -131,8 +188,6 @@ namespace data_structures {
 						node_index = node_index - 1;
 					}
 				}
-				// std::cout << "\t\t\tAt end of node_shifter, node_index is " << node_index << std::endl;
-				// std::cout << "\t\this_node->get_data() : \"" << this_node->get_data() << "\"" << std::endl;
 			}
 
 			void frame_shifter(signed long by) {
@@ -149,7 +204,6 @@ namespace data_structures {
 			linear_linked_list() {
 				this->front = this->rear = this->frame = nullptr;
 				this->size = 0;
-				// std::cout << "Just called default constructor" << std::endl;
 			}
 
 
@@ -165,25 +219,15 @@ namespace data_structures {
 				if (this == &other_list) {
 					return;
 				}
-				// this->reset();
-				// this->front = this->frame = this->rear = nullptr;
 				this->size = 0;
-				// std::cout << "Copy constructor called. Original length is " << this->size << std::endl;
-				// ~linear_linked_list();
 				unsigned long index;
 				for (index = 0; index < other_list.length(); index = index + 1) {
 					this->push(other_list.peek(index));
 				}
-				// std::cout << "At end of copy constructor call. linear_linked_list has a length of " << this->size << std::endl;
-				// std::cout << "At end of copy constructor call, data in this object is :" << std::endl;
-				// for (index = 0; index < this->size; index = index + 1) {
-				// 	std::cout << "\t" << this->peek(index) << std::endl;
-				// }
 			}
 
 
 			~linear_linked_list() {
-				// std::cout << "Inside destructor" << std::endl;
 				this->reset();
 			}
 
@@ -195,194 +239,232 @@ namespace data_structures {
 			// Comparison operators
 
 			bool operator==(linear_linked_list<data_>& other) {
-				if (this == &other) {
+				fprintf(stderr, "== operator not yet implemented\n");
+				exit(EXIT_FAILURE);
+				if (this == *other) {
 					return true;
 				}
-				if (this->size == other.length()) {
-					unsigned long index;
-					for (index = 0; index < this->size; index = index + 1) {
-						if (this->peek(index) != other.peek(index)) {
-							return false;
-						}
+				unsigned long other_index = 0;
+
+				for (this->frame = this->front, this->frame_index = 0; this->frame != nullptr; this->frame = this->frame->get_next(), this->frame_index = this->frame_index + 1) {
+					if (this->frame->get_data() != other[this->frame_index]) {
+						return false;
 					}
-					return true;
 				}
-				return false;
+				return true;
 			}
+
+
 
 
 			bool operator!=(linear_linked_list<data_>& other) {
-				if (this == &other) {
-					return false;
-				}
-				if (this->size != other.length()) {
+				fprintf(stderr, "!= operator not yet implemented\n");
+				exit(EXIT_FAILURE);
+				if (this != *other) {
 					return true;
 				}
-				// the sizes are the same.
-				unsigned long index;
-				for (index = 0; index < this->size; index = index + 1) {
-					if (this->peek(index) != other.peek(index)) {
-						return true;
+				unsigned long other_index = 0;
+
+				for (this->frame = this->front, this->frame_index = 0; this->frame != nullptr; this->frame = this->frame->get_next(), this->frame_index = this->frame_index + 1) {
+					if (this->frame->get_data() == other[this->frame_index]) {
+						return false;
 					}
 				}
-				return false;
+				return true;
 			}
+
+
+
+
+			bool operator<=(linear_linked_list<data_>& other) {
+				fprintf(stderr, "<= operator not yet implemented\n");
+				exit(EXIT_FAILURE);
+			}
+
+
+
+			bool operator>=(linear_linked_list<data_>& other) {
+				fprintf(stderr, "=> operator not yet implemented\n");
+				exit(EXIT_FAILURE);
+			}
+
+
 
 
 			data_& operator [](signed long index) {
 				try {
 					this->peek(index);
-					// frame is now at index.
 					return this->frame->get_data_ref();
 				}
 				catch (std::range_error except) {
-					// std::cout << "Illegal index reference " << index << std::endl;
-					// exit(EXIT_FAILURE);
 					throw except;
 				}
-
 			}
 
 
-			linear_linked_list<data_>& operator=(linear_linked_list<data_>& other) {
-				if (this == &other) {
-					return *this;
-				}
-				this->reset();
-				signed long index;
-				for (index = 0; index < other.length(); index = index + 1) {
-					this->push(other[index]);
-				}
-				return *this;
-				// linear_linked_list<data_> the_answer;
-				// signed long index;
-				// for (index = 0; index < other.length(); index = index + 1) {
-				// 	the_answer.push(other[index]);
-				// }
-				// return the_answer;
-			}
+
 
 
 			/**
-			 * @brief Check if the linear_linked_list is empty or not.
-			 * @returns {@code true} if the linear_linked_list, but {@code false} otherwise.
+			 * @brief Check if the current linked list is empty or not.
+			 * 
+			 * @returns `(bool)` : true if the linked list is empty, false otherwise.
 			*/
 			bool empty() const {
 				return (this->size == 0);
 			}
 
 
+
+
+
 			/**
-			 * @brief Get the size of the linked list as an unsigned long.
-			 * @returns An {@code unsigned long} of the length of the linear_linked_list.
+			 * @brief Get the size of the linked list.
+			 * 
+			 * @returns `(unsigned long)` : The length of the linked list.
 			*/
 			unsigned long length() const {
 				return this->size;
 			}
 
 
+
+
+
 			/**
-			 * @brief Pushes new data onto the linear_linked_list.
-			 * @note A negative index will reference linear_linked_list.length() + index. Just like in python lists.
-			 * @param new_data The data to be pushed onto the linear_linked_list.
-			 * @param index The index where the data will go on the linear_linked_list.
+			 * @brief Empties out the linked list and frees up memory.
+			 * 
+			 * @returns void.
+			*/
+			void reset() {
+				// // std::cout << "Inside reset method" << // std::endl;
+				this->frame = this->front;
+				while (this->frame != nullptr) {
+					this->front = this->frame->get_next();
+					delete this->frame;
+					this->frame = this->front;
+				}
+				this->size = 0;
+			}
+
+
+
+
+
+			/**
+			 * @brief Push new data onto the linked list.
+			 * 
+			 * @note Can push to negative indexes. Negative indexes will push from the back of the list.
+			 * 
+			 * @param new_data `(Generic)` : The new data to be pushed onto the linked list.
+			 * 
+			 * @param index `(signed long)` : The index where the data should be pushed to. Defaults to -1.
+			 * 
+			 * @returns void.
+			 * 
+			 * @throws Throws a `std::range_error` if the index passed in references an index greater than the current size.
+			 * 
 			*/
 			void push(data_ new_data, signed long index = -1) {
-				unsigned long add_to;
-				// std::cout << "Trying to add \"" << new_data << "\" to index " << index << std::endl;
-				if ((useful_functions::absolute(index) > this->size + 1) && (index < 0)) {
-					// std::string msg = "For negative 'index', absolute(index) cannot be greater than the size of the linear_linked_list (" + std::to_string(this->size);
-					throw std::range_error("Cannot push negative 'index', absolute(index) cannot be greater than the size of the linear_linked_list (" + std::to_string(this->size));
+				unsigned long add_index = (index < 0) ? (this->size - (unsigned long) useful_functions::absolute<signed long>(index)) + 1 : (unsigned long) useful_functions::absolute<signed long>(index);
+				if (add_index > this->size) {
+					throw std::range_error("Cannot push data to negative index whose absolute value converts to a larger value than the size of the list");
 				}
-				add_to = (index < 0) ? this->size + 1 - useful_functions::absolute(index) : useful_functions::absolute(index);
-				// std::cout << "pushing new data \"" << new_data << "\" to index " << add_to << ", with passed in index of " << index << std::endl;
+				
+				linear_node<data_>* new_node = new linear_node<data_>(new_data);
+				
 				if (this->size == 0) {
-					// std::cout << "In this->size == 0 branch" << std::endl;
-					this->front = this->rear = this->frame = new linear_node<data_>(new_data);
+					this->front = this->rear = this->frame = new_node;
 				}
-				else {
-					// std::cout << "In else branch" << std::endl;
-					linear_node<data_>* new_node = new linear_node<data_>(new_data);
-					if (add_to == 0) {
-						// std::cout << "\tIn add_to == 0 branch" << std::endl;
-						// terminal at front
-						// std::cout << "1..." << std::endl;
-						this->front->set_previous(new_node);
-						// std::cout << "2..." << std::endl;
-						this->front->get_previous()->set_next(this->front);
-						// std::cout << "3..." << std::endl;
-						this->front = this->front->get_previous();
-						// std::cout << "4..." << std::endl;
-						this->frame = this->front;
-						// std::cout << "5..." << std::endl;
 
+				else if (this->size == 1) {
+
+					if (add_index == 0) {
+						this->front->set_previous(new_node);
+						this->front->get_previous()->set_next(this->front);
+						this->front = this->front->get_previous();
+						this->frame = this->front;
 					}
 
-					else if (add_to == this->size) {
-						// terminal at end
-						// std::cout << "\tAdding to the end " << std::endl;
+					else {
+						// index is 1
 						this->rear->set_next(new_node);
 						this->rear->get_next()->set_previous(this->rear);
 						this->rear = this->rear->get_next();
 						this->frame = this->rear;
-						// std::cout << "now previous is " << this->rear->get_previous()->get_data() << std::endl;
-						// std::cout << "now next is " << ((this->rear->get_next() == nullptr) ? "NULL" : this->rear->get_next()->get_data()) << std::endl;
 					}
+				}
 
+				else {
+					if (add_index == 0) {
+						this->front->set_previous(new_node);
+						this->front->get_previous()->set_next(this->front);
+						this->front = this->front->get_previous();
+						this->frame = this->front;
+					}
+					else if (add_index == this->size) {
+						this->rear->set_next(new_node);
+						this->rear->get_next()->set_previous(this->rear);
+						this->rear = this->rear->get_next();
+						this->frame = this->rear;
+					}
 					else {
-						// not terminal. Adding to somewhere in the middle.
-						signed long front_to_target, rear_to_target, frame_to_target;
-						front_to_target = ((signed long) add_to);
-						rear_to_target = ((signed long) add_to) - ((signed long) this->size - 1);
-						frame_to_target = ((signed long) add_to) - ((signed long) this->frame_index);
-						signed long* distances[] = {&front_to_target, &rear_to_target, &frame_to_target};
-						signed long* minimum = useful_functions::min(3, distances, true);
-						if (minimum == &front_to_target) {
+						// this is where some extra work comes into play.
+						signed long from_first = (signed long) add_index, from_rear = (signed long) (this->size - add_index), from_frame = (signed long) add_index - (signed long) add_index;
+						unsigned long frame_abs = (from_frame < 0) ? ((unsigned long) (-1 * from_frame)) : (unsigned long) from_frame;
+						signed long* signed_lists[] = {&from_first, &from_rear, &from_frame};
+						useful_functions::selection_sort<signed long>(signed_lists, 3, true);
+						
+						if (signed_lists[0] == &from_first) {
+							// shortest distance is from the front
 							this->frame = this->front;
 							this->frame_index = 0;
+							this->frame_shifter(from_first);
 						}
-						else if (minimum == &rear_to_target) {
+						else if (signed_lists[0] == &from_rear) {
+							// shoftest distance is from the rear
 							this->frame = this->rear;
 							this->frame_index = this->size - 1;
+							this->frame_shifter((signed long) ( -1 * from_rear));
 						}
-						this->frame_shifter(*minimum);
-						// std::cout << "frame_info : " << this->frame_index << ".)\t" << this->frame->get_data() << std::endl;
+						else {
+							// shortest distance is from the frame
+							// fprintf(stdout, "Inside else branch of the push method. Pushing data towards the center of the list\n");
+							this->frame_shifter(from_frame);
+						}
+
+						// Now frame should be at the proper index.
 						new_node->set_previous(this->frame->get_previous());
-						new_node->set_next(this->frame);
 						this->frame->get_previous()->set_next(new_node);
 						this->frame->set_previous(new_node);
+						new_node->set_next(this->frame);
+						this->frame = this->frame->get_previous();
 
 					}
-					
 				}
 				this->size = this->size + 1;
 			}
 
 
+
+
+
 			/**
-			 * @brief Check for data on the linear_linked_list. By default, data at the end of the linked list is looked at.
+			 * @brief Peek at the data inside the linked list at a specific index.
 			 * 
-			 * @note A negative index will reference linear_linked_list.length() + index. Just like in python lists.
+			 * @param index `(Generic)` : Defaults to -1. The index whose data is to be looked up.
 			 * 
-			 * @param index The index whose data is to be looked at in the linear_linked_list.
+			 * @note This method can accept negative indexes. If the index references data 
+			 * outside the range of the linked list, a length error is thrown.
 			 * 
-			 * @returns The data at the specifed index in the linear_linked_list.
-			 * 
-			 * @throws std::range_error if the linear_linked_list is empty, or an unreachable index is referenced.
+			 * @returns `(Generic)` : The data at the index specified.
 			*/
 			data_ peek(signed long index = -1) {
-				// std::cout << "Raw peeking index " << index << std::endl;
+				unsigned long peek_index = (index < 0) ? (this->size - ((unsigned long) index) - 1) : (unsigned long) index;
 				if (this->size == 0) {
-					throw std::range_error(std::string("Cannot peek empty linked list"));
+					throw std::length_error("linear linked list is empty.");
 				}
-				unsigned long peek_index;
-				if ((useful_functions::absolute(index) > this->size) && (index < 0)) {
-					throw std::range_error(std::string("absolute(index) cannot be greater than the size of the linear_linked_list (") + std::to_string(this->size));
-				}
-				peek_index = (index < 0) ? (((unsigned long) this->size) - useful_functions::absolute(index) ) : ((unsigned long) index);
-				// std::cout << "Peek index is " << peek_index << ", and size is " << this->size << std::endl;
 				if (peek_index == 0) {
-					// std::cout << "about to peek at index 0" << std::endl;
 					this->frame = this->front;
 					this->frame_index = 0;
 				}
@@ -391,48 +473,250 @@ namespace data_structures {
 					this->frame_index = this->size - 1;
 				}
 				else {
-					signed long shift = (signed long) peek_index - (signed long) this->frame_index;
-					this->frame_shifter(shift);
+					// This is where some extra work comes into play.
+					// this is constly on a smaller linked list,
+					// but the payoff is big for a larger linked list.
+					unsigned long from_first = peek_index, from_rear = this->size - 1 - peek_index, from_frame = ((signed long) peek_index - (signed long) this->frame_index);
+					unsigned long* distances[] = {&from_first, &from_rear, &from_frame};
+					useful_functions::insertion_sort<unsigned long>(distances, 3, true);
+					if (distances[0] == &from_first) {
+						this->frame = this->front;
+						this->frame_index = 0;
+						this->frame_shifter((signed long) from_first);
+					}
+					else if (distances[0] == &from_rear) {
+						this->frame = this->rear;
+						this->frame_index = this->size - 1;
+						this->frame_shifter((signed long) from_rear);
+					}
+					else {
+						// frame is the shortest distance to traverse
+						this->frame_shifter((index < 0) ? ((signed long) from_frame * -1) : ((signed long) from_frame));
+					}
 				}
-				
+				// fprintf(stdout, "\tAbout to return %lu at index %lu\n", this->frame->get_data(), this->frame_index);
 				return this->frame->get_data();
 			}
 
 
-			/**
-			 * @brief Resets the linear_linked_list to be empty and frees all the data.
-			*/
-			void reset() {
-				// std::cout << "Inside reset method" << std::endl;
-				this->frame = this->front;
-				while (this->frame != nullptr) {
-					this->front = this->frame->get_next();
-					// std::cout << "Deleting " << this->frame << std::endl << "\t->\"" << this->frame->get_data() << std::endl;
-					delete this->frame;
-					this->frame = this->front;
+	};
+
+
+	template <typename data_> class binary_search_tree {
+
+		private:
+			unsigned long size;
+			signed long height;
+			bst_node<data_>* root;
+		
+
+			void push_new_data(bst_node<data_>* current, data_ new_data) {
+				// fprintf(stdout, "Inside the push_new_data\n");
+				if (current == nullptr) {
+					return;
 				}
-				this->size = 0;
-				// std::cout << "Finished reset call" << std::endl;
+				else if (new_data >= current->get_data()) {
+					// go to the right of the current node.
+					if (current->get_right_child() == nullptr) {
+						// set the child here.
+						current->set_right_child(new bst_node<data_>(new_data, current->get_height() + 1));
+						current->get_right_child()->set_parent(current);
+						this->size = this->size + 1;
+						if (current->get_height() + 1 > this->height) {
+							this->height = this->height + 1;
+						}
+						return;
+					}
+					this->push_new_data(current->get_right_child(), new_data);
+				}
+				else {
+					// go to the left of the current node.
+					if (current->get_left_child() == nullptr) {
+						// set the child here
+						current->set_left_child(new bst_node<data_>(new_data, current->get_height() + 1));
+						current->get_left_child()->set_parent(current);
+						this->size = this->size + 1;
+						if (current->get_height() + 1 > this->height) {
+							this->height = this->height + 1;
+						}
+						return;
+					}
+					this->push_new_data(current->get_left_child(), new_data);
+				}
 			}
 
-			
-			void swap(signed long first = 0, signed long last = -1) {
-				if (this->size == 0) {
-					throw std::range_error("No data in linked list to swap around");
+			void update_heights(bst_node<data_>* current, signed long this_height) {
+				if (current == nullptr) {
+					return;
+				}
+				current->set_height(this_height);
+				update_heights(current->get_left_child(), this_height + 1);
+				update_heights(current->get_right_child(), this_height + 1);
+				return;
+			}
+
+			void free_tree(bst_node<data_>* current) {
+				if (current == nullptr) {
+					return;
+				}
+
+				free_tree(current->get_left_child());
+				free_tree(current->get_right_child());
+				delete current;
+			}
+
+			signed long height_of(bst_node<data_>* current, data_ data) {
+				if (current == nullptr) {
+					return -1;
+				}
+				if (current->get_data() == data) {
+					return this->get_height();
+				}
+				if (data > current->get_data()) {
+					return this->height_of(current->get_right_child(), data);
+				}
+				return this->height_of(current->get_left_child(), data);
+			}
+
+			bst_node<data_>* get_most_child(bst_node<data_>* current, bool left = true) {
+				if (current == nullptr) {
+					return nullptr;
+				}
+				if (left) {
+					if (current->get_left_child() == nullptr) {
+						return current;
+					}
+					return this->get_most_child(current->get_left_child(), true);
+				}
+				else {
+					if (current->get_right_child() == nullptr) {
+						return current;
+					}
+					return this->get_most_child(current->get_right_child(), false);
+				}
+			}
+
+			void update_node_heights(bst_node<data_>* current, signed long current_height) {
+				if (current == nullptr) {
+					return;
+				}
+				this->update_heights(current->get_left_child(), current_height + 1);
+				this->update_heights(current->get_right_child(), current_height + 1);
+				current->set_height(current_height);
+			}
+
+			void update_height(bst_node<data_>* current, signed long new_val) {
+				if (current == nullptr) {
+					return;
+				}
+				if (!current->get_left_child() && !current->get_right_child()) {
+					this->height = new_val;
+				}
+				current->set_height(new_val);
+				this->update_height(current->get_left_child(), new_val + 1);
+				this->update_height(current->get_right_child(), new_val + 1);
+			}
+
+			void remove_node(bst_node<data_>* current, data_ remove_me) {
+				
+				// base case 1 : The data doesn't exist.
+				if (current == nullptr) {
+					return;
 				}
 				
-				if ((first < 0) && ((((signed long) this->size) + first) >= this->size)) {
-					throw std::range_error("Illegal index " + std::to_string(first) + " passed in");
+				// base case 2: The data has been found
+				if (current->get_data() == remove_me) {
+					// There is a left child and a right child.
+					if (current->get_left_child() && current->get_right_child()) {
+						// get the left child's rightmost leaf.
+						bst_node<data_>* right_most = this->get_most_child(current->get_left_child(), false);
+						right_most->get_parent()->set_right_child(nullptr);
+						current->set_data(right_most->get_data());
+					}
+
+					// There is only a left child and no right child.
+					else if (current->get_left_child() && !current->get_right_child()) {
+						bst_node<data_>* right_most = this->get_most_child(current->get_left_child(), false);
+						right_most->get_parent()->set_right_child(nullptr);
+						current->set_data(right_most->get_data());
+					}
+
+					// There is only a right child and no left child.
+					else {
+						bst_node<data_>* left_most = this->get_most_child(current->get_left_child(), true);
+						left_most->get_parent()->set_right_child(nullptr);
+						current->set_data(left_most->get_data());
+					}
+					this->size = this->size - 1;
+					return;
 				}
 
-				if ((last < 0) && ((((signed long) this->size) + last) >= this->size)) {
-					throw std::range_error("Illegal index " + std::to_string(last) + " passed in");
-				}
-
+				// The data could be in the left or right child
+				this->remove_node((remove_me >= current->get_data()) ? current->get_right_child() : current->get_left_child(), remove_me);
 			}
 
+
+		public:
+
+			binary_search_tree() {
+				this->size = 0;
+				this->height = -1;
+				this->root = nullptr;
+			}
+
+
+			binary_search_tree(data_ new_data) {
+				this->root = new bst_node<data_>(new_data);
+				this->root->set_height(0);
+				this->size = 1;
+				this->height = 0;
+			}
+
+
+			~binary_search_tree() {
+				this->free_tree(this->root);
+			}
+
+
+			unsigned long get_height() const {
+				return this->height;
+			}
+
+			signed long get_size() const {
+				return this->size;
+			}
+
+			bool empty() const {
+				return this->size == 0;
+			}
+
+			void add(data_ new_data) {
+				if (this->size == 0) {
+					this->root = new bst_node<data_>(new_data, 0);
+					this->size = 1;
+					this->height = 0;
+				}
+				else {
+					this->push_new_data(this->root, new_data);
+				}
+			}
+
+			bool contains(data_ to_find) {
+				return this->height_of(this->root, to_find) != -1;
+			}
+
+			signed long data_height(data_ to_find) {
+				return this->height_of(this->root, to_find);
+			}
+
+
+			void remove(data_ to_remove) {
+				throw std::runtime_error("remove method not yet implemented");
+				this->remove_node(this->root, to_remove);
+			}
 
 
 	};
+
 
 }
